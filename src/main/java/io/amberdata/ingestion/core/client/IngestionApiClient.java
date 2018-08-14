@@ -1,6 +1,7 @@
 package io.amberdata.ingestion.core.client;
 
 import io.amberdata.ingestion.core.configuration.IngestionApiProperties;
+import io.amberdata.ingestion.core.state.ResourceStateStorage;
 import io.amberdata.ingestion.domain.BlockchainEntity;
 import java.time.Duration;
 import java.util.Collections;
@@ -28,9 +29,14 @@ public class IngestionApiClient {
 
   private final WebClient webClient;
   private final IngestionApiProperties apiProperties;
+  private final ResourceStateStorage stateStorage;
 
-  public IngestionApiClient(IngestionApiProperties apiProperties) {
+  public IngestionApiClient(IngestionApiProperties apiProperties,
+                            ResourceStateStorage stateStorage) {
+
     this.apiProperties = apiProperties;
+    this.stateStorage = stateStorage;
+
     this.webClient = WebClient.builder()
         .baseUrl(apiProperties.getUrl())
         .defaultHeaders(this::defaultHttpHeaders)
@@ -49,17 +55,11 @@ public class IngestionApiClient {
       List<BlockchainEntityWithState<T>> entitiesWithState,
       Class<T> entityClass) {
 
-    List<T> entities = entitiesWithState.stream()
-        .map(BlockchainEntityWithState::getEntity)
-        .peek(entity -> LOG
-            .info("Ready for publishing to the ingestion API endpoint {}: {}", endpointUri, entity))
-        .collect(Collectors.toList());
-
     webClient
         .post()
         .uri(endpointUri)
         .accept(MediaType.APPLICATION_JSON)
-        .body(BodyInserters.fromObject(entities))
+        .body(BodyInserters.fromObject(extractEntitiesFrom(entitiesWithState)))
         .retrieve()
         .bodyToFlux(entityClass)
         .retryWhen(companion -> companion
@@ -68,7 +68,21 @@ public class IngestionApiClient {
             .flatMap(this::backOffDelay)
         ).blockLast();
 
-    return entitiesWithState.get(entitiesWithState.size() - 1);
+    BlockchainEntityWithState<T> lastEntityWithState = entitiesWithState
+        .get(entitiesWithState.size() - 1);
+
+    stateStorage.storeState(lastEntityWithState);
+
+    return lastEntityWithState;
+  }
+
+  private <T extends BlockchainEntity> List<T> extractEntitiesFrom(
+      List<BlockchainEntityWithState<T>> entitiesWithState) {
+
+    return entitiesWithState.stream()
+        .map(BlockchainEntityWithState::getEntity)
+        .peek(entity -> LOG.info("Ready for publishing {}", entity))
+        .collect(Collectors.toList());
   }
 
   private int handleError(Throwable error, int retryIndex) {
