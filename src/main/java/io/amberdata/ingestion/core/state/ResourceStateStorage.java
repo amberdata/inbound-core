@@ -3,6 +3,7 @@ package io.amberdata.ingestion.core.state;
 import io.amberdata.ingestion.core.client.BlockchainEntityWithState;
 import io.amberdata.ingestion.core.state.entities.ResourceState;
 import io.amberdata.ingestion.core.state.repositories.ResourceStateRepository;
+import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -45,10 +46,10 @@ public class ResourceStateStorage {
     );
   }
 
-  public String getStateToken(String resourceType) {
+  public String getStateToken(String resourceType, Supplier<String> defaultStateTokenSupplier) {
     return resourceStateRepository
         .findById(resourceType)
         .map(ResourceState::getStateToken)
-        .orElse("now");
+        .orElse(defaultStateTokenSupplier.get());
   }
 }
