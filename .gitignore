@@ -38,3 +38,5 @@ bin/
 *.log
 screenlog.0
 
+# State embedded database
+/ingestion-module-state*
