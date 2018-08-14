@@ -80,8 +80,8 @@ public class IngestionApiClient {
     throw Exceptions.propagate(error);
   }
 
-  private Mono<Long> backOffDelay(Integer index) {
-    Duration delayDuration = apiProperties.getBackOffTimeoutInitial().multipliedBy(index);
+  private Mono<Long> backOffDelay(Integer exponentialMultiplier) {
+    Duration delayDuration = apiProperties.getBackOffTimeoutInitial().multipliedBy(exponentialMultiplier);
     if (delayDuration.compareTo(apiProperties.getBackOffTimeoutMax()) > 0) {
       delayDuration = apiProperties.getBackOffTimeoutMax();
     }
