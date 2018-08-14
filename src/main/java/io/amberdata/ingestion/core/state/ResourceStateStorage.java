@@ -33,7 +33,7 @@ public class ResourceStateStorage {
   public void storeState(BlockchainEntityWithState entityWithState) {
     ResourceState resourceState = entityWithState.getResourceState();
 
-    LOG.info("Going to store state for {} with paging token {}",
+    LOG.info("Going to store state for {} with state token {}",
         resourceState.getResourceType(),
         resourceState.getStateToken()
     );
