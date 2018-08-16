@@ -25,7 +25,6 @@ import reactor.core.publisher.Mono;
 @PropertySource("classpath:ingestion-defaults.properties")
 @EnableConfigurationProperties(IngestionApiProperties.class)
 public class IngestionApiClient {
-
   private static final Logger LOG = LoggerFactory.getLogger(IngestionApiClient.class);
 
   private final WebClient webClient;
@@ -47,21 +46,23 @@ public class IngestionApiClient {
   }
 
   private void defaultHttpHeaders(HttpHeaders httpHeaders) {
-    httpHeaders.add("x-amberdata-blockchain-id", apiProperties.getBlockchainId());
-    httpHeaders.add("x-amberdata-api-key", apiProperties.getApiKey());
+    httpHeaders.add("x-amberdata-blockchain-id", this.apiProperties.getBlockchainId());
+    httpHeaders.add("x-amberdata-api-key", this.apiProperties.getApiKey());
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
   }
 
-  public <T extends BlockchainEntity> BlockchainEntityWithState<T> publish(String endpointUri,
-      BlockchainEntityWithState<T> entityWithState) {
-
+  public <T extends BlockchainEntity> BlockchainEntityWithState<T> publish(
+      String endpointUri,
+      BlockchainEntityWithState<T> entityWithState
+  ) {
     return publish(endpointUri, Collections.singletonList(entityWithState));
   }
 
-  public <T extends BlockchainEntity> BlockchainEntityWithState<T> publish(String endpointUri,
-      List<BlockchainEntityWithState<T>> entitiesWithState) {
-
-    String response = webClient
+  public <T extends BlockchainEntity> BlockchainEntityWithState<T> publish(
+      String endpointUri,
+      List<BlockchainEntityWithState<T>> entitiesWithState
+  ) {
+    String response = this.webClient
         .post()
         .uri(endpointUri)
         .accept(MediaType.APPLICATION_JSON)
@@ -78,14 +79,14 @@ public class IngestionApiClient {
     BlockchainEntityWithState<T> lastEntityWithState = entitiesWithState
         .get(entitiesWithState.size() - 1);
 
-    stateStorage.storeState(lastEntityWithState);
+    this.stateStorage.storeState(lastEntityWithState);
 
     return lastEntityWithState;
   }
 
   private <T extends BlockchainEntity> List<T> extractEntitiesFrom(
-      List<BlockchainEntityWithState<T>> entitiesWithState) {
-
+      List<BlockchainEntityWithState<T>> entitiesWithState
+  ) {
     return entitiesWithState.stream()
         .map(BlockchainEntityWithState::getEntity)
         .peek(entity -> LOG.info("Ready for publishing {}", entity))
@@ -106,16 +107,16 @@ public class IngestionApiClient {
       LOG.info("Server responded with error", error);
     }
 
-    if (retryIndex < apiProperties.getRetriesOnError()) {
+    if (retryIndex < this.apiProperties.getRetriesOnError()) {
       return (int) Math.pow(2, retryIndex);
     }
     throw Exceptions.propagate(error);
   }
 
   private Mono<Long> backOffDelay(Integer exponentialMultiplier) {
-    Duration delayDuration = apiProperties.getBackOffTimeoutInitial().multipliedBy(exponentialMultiplier);
-    if (delayDuration.compareTo(apiProperties.getBackOffTimeoutMax()) > 0) {
-      delayDuration = apiProperties.getBackOffTimeoutMax();
+    Duration delayDuration = this.apiProperties.getBackOffTimeoutInitial().multipliedBy(exponentialMultiplier);
+    if (delayDuration.compareTo(this.apiProperties.getBackOffTimeoutMax()) > 0) {
+      delayDuration = this.apiProperties.getBackOffTimeoutMax();
     }
     LOG.info("Back-off delay {}ms", delayDuration.toMillis());
 

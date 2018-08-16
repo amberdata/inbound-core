@@ -6,7 +6,6 @@ import javax.persistence.Id;
 
 @Entity
 public class ResourceState {
-
   @Id
   private String resourceType;
 
@@ -26,7 +25,7 @@ public class ResourceState {
   }
 
   public String getResourceType() {
-    return resourceType;
+    return this.resourceType;
   }
 
   public void setResourceType(String resourceType) {
@@ -34,7 +33,7 @@ public class ResourceState {
   }
 
   public String getStateToken() {
-    return stateToken;
+    return this.stateToken;
   }
 
   public void setStateToken(String stateToken) {
@@ -44,8 +43,8 @@ public class ResourceState {
   @Override
   public String toString() {
     return "ResourceState{" +
-        "resourceType='" + resourceType + '\'' +
-        ", stateToken='" + stateToken + '\'' +
+        "resourceType='" + this.resourceType + '\'' +
+        ", stateToken='" + this.stateToken + '\'' +
         '}';
   }
 }

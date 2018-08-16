@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 @EnableJpaRepositories("io.amberdata.ingestion.core.state.repositories")
 @EntityScan("io.amberdata.ingestion.core.state.entities")
 public class ResourceStateStorage {
-
   private static final Logger LOG = LoggerFactory.getLogger(ResourceStateStorage.class);
 
   private final ResourceStateRepository resourceStateRepository;
@@ -38,7 +37,7 @@ public class ResourceStateStorage {
         resourceState.getStateToken()
     );
 
-    resourceStateRepository.saveAndFlush(
+    this.resourceStateRepository.saveAndFlush(
         ResourceState.from(
             resourceState.getResourceType(),
             resourceState.getStateToken()
@@ -47,7 +46,7 @@ public class ResourceStateStorage {
   }
 
   public String getStateToken(String resourceType, Supplier<String> defaultStateTokenSupplier) {
-    return resourceStateRepository
+    return this.resourceStateRepository
         .findById(resourceType)
         .map(ResourceState::getStateToken)
         .orElse(defaultStateTokenSupplier.get());
