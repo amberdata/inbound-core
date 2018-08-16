@@ -5,5 +5,4 @@ package io.amberdata.ingestion.core;
  * {@code @ComponentScan(basePackageClasses = IngestionCore.class)}
  */
 public interface IngestionCore {
-
 }

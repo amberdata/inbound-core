@@ -7,7 +7,6 @@ import org.springframework.boot.convert.DurationUnit;
 
 @ConfigurationProperties("ingestion.api")
 public class IngestionApiProperties {
-
   private String url;
   private String blockchainId;
   private String apiKey;
@@ -20,7 +19,7 @@ public class IngestionApiProperties {
   private Duration backOffTimeoutMax;
 
   public String getUrl() {
-    return url;
+    return this.url;
   }
 
   public void setUrl(String url) {
@@ -28,7 +27,7 @@ public class IngestionApiProperties {
   }
 
   public String getBlockchainId() {
-    return blockchainId;
+    return this.blockchainId;
   }
 
   public void setBlockchainId(String blockchainId) {
@@ -36,7 +35,7 @@ public class IngestionApiProperties {
   }
 
   public String getApiKey() {
-    return apiKey;
+    return this.apiKey;
   }
 
   public void setApiKey(String apiKey) {
@@ -44,7 +43,7 @@ public class IngestionApiProperties {
   }
 
   public Integer getRetriesOnError() {
-    return retriesOnError > 0 ? retriesOnError : Integer.MAX_VALUE;
+    return this.retriesOnError > 0 ? this.retriesOnError : Integer.MAX_VALUE;
   }
 
   public void setRetriesOnError(Integer retriesOnError) {
@@ -52,7 +51,7 @@ public class IngestionApiProperties {
   }
 
   public Duration getBackOffTimeoutInitial() {
-    return backOffTimeoutInitial;
+    return this.backOffTimeoutInitial;
   }
 
   public void setBackOffTimeoutInitial(Duration backOffTimeoutInitial) {
@@ -60,7 +59,7 @@ public class IngestionApiProperties {
   }
 
   public Duration getBackOffTimeoutMax() {
-    return backOffTimeoutMax;
+    return this.backOffTimeoutMax;
   }
 
   public void setBackOffTimeoutMax(Duration backOffTimeoutMax) {
@@ -70,12 +69,12 @@ public class IngestionApiProperties {
   @Override
   public String toString() {
     return "IngestionApiProperties{" +
-        "url='" + url + '\'' +
-        ", blockchainId='" + blockchainId + '\'' +
-        ", apiKey='" + apiKey + '\'' +
-        ", retriesOnError=" + retriesOnError +
-        ", backOffTimeoutInitial=" + backOffTimeoutInitial +
-        ", backOffTimeoutMax=" + backOffTimeoutMax +
+        "url='" + this.url + '\'' +
+        ", blockchainId='" + this.blockchainId + '\'' +
+        ", apiKey='" + this.apiKey + '\'' +
+        ", retriesOnError=" + this.retriesOnError +
+        ", backOffTimeoutInitial=" + this.backOffTimeoutInitial +
+        ", backOffTimeoutMax=" + this.backOffTimeoutMax +
         '}';
   }
 }
