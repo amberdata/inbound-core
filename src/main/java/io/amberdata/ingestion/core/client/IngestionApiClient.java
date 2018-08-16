@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -55,18 +56,19 @@ public class IngestionApiClient {
       List<BlockchainEntityWithState<T>> entitiesWithState,
       Class<T> entityClass) {
 
-    webClient
+    String response = webClient
         .post()
         .uri(endpointUri)
         .accept(MediaType.APPLICATION_JSON)
         .body(BodyInserters.fromObject(extractEntitiesFrom(entitiesWithState)))
         .retrieve()
-        .bodyToFlux(entityClass)
+        .bodyToMono(String.class)
         .retryWhen(companion -> companion
-            .doOnNext(throwable -> LOG.error("Error occurred: {}", throwable.getMessage()))
             .zipWith(Flux.range(1, Integer.MAX_VALUE), this::handleError)
             .flatMap(this::backOffDelay)
-        ).blockLast();
+        ).block();
+
+    LOG.info("Server response: {}", response);
 
     BlockchainEntityWithState<T> lastEntityWithState = entitiesWithState
         .get(entitiesWithState.size() - 1);
@@ -86,7 +88,18 @@ public class IngestionApiClient {
   }
 
   private int handleError(Throwable error, int retryIndex) {
-    LOG.info("Trying to recover after {}: {} times", error.getMessage(), retryIndex);
+    LOG.info("Trying to recover after error {} times", retryIndex);
+
+    if (error instanceof WebClientResponseException) {
+      WebClientResponseException responseException = (WebClientResponseException) error;
+      LOG.info("Server responded with error \n code:{} \n status:'{}' \n body:'{}'",
+          responseException.getRawStatusCode(),
+          responseException.getStatusText(),
+          responseException.getResponseBodyAsString()
+      );
+    } else {
+      LOG.info("Server responded with error", error);
+    }
 
     if (retryIndex < apiProperties.getRetriesOnError()) {
       return (int) Math.pow(2, retryIndex);
