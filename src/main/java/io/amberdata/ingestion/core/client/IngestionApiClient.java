@@ -53,8 +53,13 @@ public class IngestionApiClient {
   }
 
   public <T extends BlockchainEntity> BlockchainEntityWithState<T> publish(String endpointUri,
-      List<BlockchainEntityWithState<T>> entitiesWithState,
-      Class<T> entityClass) {
+      BlockchainEntityWithState<T> entityWithState) {
+
+    return publish(endpointUri, Collections.singletonList(entityWithState));
+  }
+
+  public <T extends BlockchainEntity> BlockchainEntityWithState<T> publish(String endpointUri,
+      List<BlockchainEntityWithState<T>> entitiesWithState) {
 
     String response = webClient
         .post()
@@ -115,12 +120,5 @@ public class IngestionApiClient {
     LOG.info("Back-off delay {}ms", delayDuration.toMillis());
 
     return Mono.delay(delayDuration);
-  }
-
-  public <T extends BlockchainEntity> BlockchainEntityWithState<T> publish(String endpointUri,
-      BlockchainEntityWithState<T> entityWithState,
-      Class<T> entityClass) {
-
-    return publish(endpointUri, Collections.singletonList(entityWithState), entityClass);
   }
 }
