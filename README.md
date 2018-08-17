@@ -58,3 +58,6 @@ $ ./mvnw clean install
 Here will be some instructions
 
 
+### Implementation example
+
+As an example of how to build you ingestion module using `ingestion-core`, you could have a look at [ingestion API module](https://github.com/amberdata/stellar-ingestion-api-module) which we created for [Stellar](https://www.stellar.org)  
