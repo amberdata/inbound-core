@@ -20,9 +20,9 @@ re-sending requests on error or even having a basic state storage to track which
 To solve these routines, you use `IngestionApiClient` java class to publish metrics instead of dealing with your favorite HTTP client directly.
 See more details in [Getting Started](#getting-started) section.
 
-### Getting it
+### Getting Started
 
-#### With Gradle or Maven
+#### Getting it with Gradle or Maven
 
 > here should be instructions of how to add maven repository which contains ingestion-core artifact
 
@@ -45,10 +45,61 @@ dependencies {
 }
 ```
 
-### Getting Started
+#### Before you start
 
-Here will be some instructions
+You can get instance of `IngestionApiClient` as spring framework component, however to use it you will need to provide some configuration.
 
+These three properties are essential to let you publish metrics to the Ingestion API. 
+
+> Note that you have to have register your blockhain before you start publishing metrics. To do that, follow the instructions: *put it here*
+
+```properties
+ingestion.api.url=https://https://blockchains.amberdata.io/api/v1
+ingestion.api.blockchain-id=CHANGE_ME
+ingestion.api.api-key=CHANGE_ME
+```
+
+These configuration properties could be passed as application parameters when running your ingestion module. 
+
+```bash
+$ java -jar app.jar \
+  --ingestion.api.url=https://https://blockchains.amberdata.io/api/v1 \
+  --ingestion.api.blockchain-id=CHANGE_ME
+  --ingestion.api.api-key=CHANGE_ME
+```
+
+#### Application configuration
+
+To help your SpringBoot application find `IngestionApiClient` class, you need to specify the package.
+The simplest way to do so is referring to io.amberdata.ingestion.core.IngestionCore marker interface in` @ComponentScan` annotation
+
+```java 
+@SpringBootApplication
+@ComponentScan(basePackageClasses = IngestionCore.class)
+public class IngestionModuleDemoApplication {
+  public static void main(String[] args) {
+    SpringApplication.run(Application.class, args);
+  }
+}
+```
+
+This will let you to inject configured `IngestionApiClient` instance as dependency. 
+
+```java 
+@Component
+public class BlocksPublisher {
+  private final IngestionApiClient ingestionApiClient;
+  
+  @Autowired
+  public BlocksPublisher(IngestionApiClient ingestionApiClient) {
+    this.ingestionApiClient = ingestionApiClient;
+  }
+}
+```
+
+> example of using IngestionApiClient
+> BlockchainEntityWithState
+> Working with State Storage
 
 ### Implementation example
 
