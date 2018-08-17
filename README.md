@@ -8,7 +8,7 @@ into generic entities which represent blockchain metrics and bridge them to the 
 
 ### Ingestion API domain model
 
-[Ingestion API domain model](https://github.com/amberdata/ingestion-domain-model/blob/master/README.md) contains a collection of generic entities 
+[Ingestion API domain model](https://github.com/amberdata/ingestion-domain-model/blob/master/README.md#getting-started) contains a collection of generic entities 
 
 ### Ingestion API Core
 
