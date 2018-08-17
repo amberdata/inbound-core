@@ -45,14 +45,6 @@ dependencies {
 }
 ```
 
-#### Clone from Github and build
-
-```sh
-$ git clone https://github.com/amberdata/ingestion-core.git
-$ cd iingestion-core
-$ ./mvnw clean install
-```
-
 ### Getting Started
 
 Here will be some instructions
