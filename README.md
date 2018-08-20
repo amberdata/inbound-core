@@ -54,7 +54,7 @@ These three properties are essential to let you publish metrics to the Ingestion
 > Note that you have to have register your blockhain before you start publishing metrics. To do that, follow the instructions: *put it here*
 
 ```properties
-ingestion.api.url=https://https://blockchains.amberdata.io/api/v1
+ingestion.api.url=https://blockchains.amberdata.io/api/v1
 ingestion.api.blockchain-id=CHANGE_ME
 ingestion.api.api-key=CHANGE_ME
 ```
@@ -63,7 +63,7 @@ These configuration properties could be passed as application parameters when ru
 
 ```bash
 $ java -jar app.jar \
-  --ingestion.api.url=https://https://blockchains.amberdata.io/api/v1 \
+  --ingestion.api.url=https://blockchains.amberdata.io/api/v1 \
   --ingestion.api.blockchain-id=CHANGE_ME
   --ingestion.api.api-key=CHANGE_ME
 ```
