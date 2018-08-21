@@ -97,9 +97,66 @@ public class BlocksPublisher {
 }
 ```
 
-> example of using IngestionApiClient
-> BlockchainEntityWithState
-> Working with State Storage
+
+To publish blockchain metrics you will run `publish` method specifying the context as in example below
+
+```java 
+ingestionApiClient.publish("/blocks", entities); // sends a list of block entities to the ingestion API endpoint 
+```
+
+Note than you can send an entity (e.g. block) or a list of entities. 
+In each case you will have to wrap entity instance into `BlockchainEntityWithState` which also contains information about state
+
+```java 
+Block block = new Block.Builder().number(12345L).build();
+
+BlockchainEntityWithState blockWithState = BlockchainEntityWithState.from(block, ResourceState.from("Block", "12345");
+
+ingestionApiClient.publish("/blocks", blockWithState);
+```
+
+The code above will publish the block to the Ingestion API and will store it's number to the internal storage. 
+
+Talking about objects you need to create for publishing a blockchain entity, there is `ResourceState` to highlight.
+
+> Resource type (1st parameter in `ResourceState.from("Block", "12345")`) can be any string which you can use it to identify the type of entity later  
+> You can pass any token (2nd parameter in `ResourceState.from("Block", "12345")`) which you can use as entity identity in order to make it possible to recover information from which entity 
+
+##### Working with State Storage
+
+Whenever you need information about the last published blockchain entity (e.g. block) you will get it from the internal storage.
+You will use for that an instance of `io.amberdata.ingestion.core.state.ResourceStateStorage` component, which you have injected into your SpringBoot application.
+
+```java 
+@Component
+public class BlocksPublisher {
+  private final IngestionApiClient ingestionApiClient;
+  private final ResourceStateStorage stateStorage;
+  
+  @Autowired
+  public BlocksPublisher(IngestionApiClient ingestionApiClient, ResourceStateStorage stateStorage) {
+    this.ingestionApiClient = ingestionApiClient;
+    this.stateStorage = stateStorage;
+  }
+}
+```
+
+Assuming you already have state info stored in the internal storage (say, you already successfully published some entities to the Ingestion API)
+you can get the state calling `getStateToken` method which returns the state's token you previously created with `ResourceState.from`;
+
+```java 
+Block block = new Block.Builder().number(12345L).build();
+
+BlockchainEntityWithState blockWithState = BlockchainEntityWithState.from(block, ResourceState.from("Block", 12345L);
+
+ingestionApiClient.publish("/blocks", blockWithState);
+
+stateStorage.getStateToken("Block", () -> "token default value"); 
+```
+
+> Note, that if no token found for the key (resourceType) you are looking for, 
+the supplier, which you pass as the second parameter, will be invoked and it's value will become the method's return value;
+
 
 ### Implementation example
 
