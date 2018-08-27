@@ -1,16 +1,18 @@
-## Amberdata Ingestion API
+# Amberdata Ingestion API
 
-Not every blockchain has exactly the same entities in its domain model... On the other hand mostly all of them have commonalities. If not same names but similar meaning. 
+The Amberdata Ingestion Domain Model defines the different entities and object models that 3rd parties can use to push data into the Amberdata platform.
 
-The idea behind the Amberdata Ingestion API domain model is to gather all similarities 
-into generic entities which represent blockchain metrics and bridge them to the [REST API](https://blockchains.amberdata.io/api/v1/spec)
+After working with and researching a few different blockchains (Ethereum, Aion, Stellar, etc)  we have found some commonalities (and differences!) between them, and this project is the result.
 
+Once ingested into the Amberdata platform, these entities are processed by our backend pipeline, where we combine these data sources with off-chain data, extract metrics, and provide insights, analytics and monitoring into your blockchain.
 
-### Ingestion API domain model
+A full Swagger documentation of the REST API is available [here](https://blockchains.amberdata.io/api/v1/spec).
+
+# Ingestion API domain model
 
 [Ingestion API domain model](https://github.com/amberdata/ingestion-domain-model/blob/master/README.md#getting-started) contains a collection of generic entities 
 
-### Ingestion API Core
+# Ingestion API Core
 
 `ingestion-core` module is a set of utilities which simplify dealing with the Ingestion API. 
 If your application is a SpringBoot 2.x application, 
@@ -20,11 +22,9 @@ re-sending requests on error or even having a basic state storage to track which
 To solve these routines, you use `IngestionApiClient` java class to publish metrics instead of dealing with your favorite HTTP client directly.
 See more details in [Getting Started](#getting-started) section.
 
-### Getting Started
+# How to use it (Gradle or Maven)
 
-#### Getting it with Gradle or Maven
-
-> here should be instructions of how to add maven repository which contains ingestion-core artifact
+> Here should be instructions of how to add maven repository which contains ingestion-domain-model artifact
 
 Add a dependency to your `pom.xml` of your SpringBoot application
 
@@ -45,7 +45,15 @@ dependencies {
 }
 ```
 
-#### Before you start
+# Build locally
+
+```sh
+$ git clone https://github.com/amberdata/ingestion-core.git
+$ cd ingestion-core
+$ mvn clean install
+```
+
+# Before you start
 
 You can get instance of `IngestionApiClient` as spring framework component, however to use it you will need to provide some configuration.
 
@@ -157,7 +165,12 @@ stateStorage.getStateToken("Block", () -> "token default value");
 > Note, that if no token found for the key (resourceType) you are looking for, 
 the supplier, which you pass as the second parameter, will be invoked and it's value will become the method's return value;
 
-
-### Implementation example
+# Implementation example
 
 As an example of how to build you ingestion module using `ingestion-core`, you could have a look at [ingestion API module](https://github.com/amberdata/stellar-ingestion-api-module) which we created for [Stellar](https://www.stellar.org)  
+
+# Licensing
+
+This project is licensed under the [Apache Licence 2.0](./LICENSE).
+
+See also [Contributing](./CONTRIBUTING.md)
