@@ -52,7 +52,7 @@
     <dependency>
       <groupId>io.amberdata.ingestion</groupId>
       <artifactId>ingestion-domain</artifactId>
-      <version>0.1.10</version>
+      <version>0.1.12</version>
     </dependency>
 
     <dependency>
