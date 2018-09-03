@@ -31,7 +31,7 @@ Once ingested into the Amberdata platform, these entities are processed by our b
 
 A full Swagger documentation of the REST API is available [here](https://blockchains.amberdata.io/api-explorer) and [here](https://blockchains.amberdata.io/api/v1/spec).
 
-# Ingestion API Core
+# Inbound API Core
 
 This `ingestion-core` project is a library that one can use when developing a new inbound module.  You can think of it as a set of utilities which simplifies interacting with the Inbound API directly. 
 
