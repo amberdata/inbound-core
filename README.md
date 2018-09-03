@@ -12,8 +12,7 @@
 * [Working with state](#working-with-state)
   * [Saving state](#saving-state)
   * [Restoring state](#restoring-state)
-
-[Implementation Examples](#implementation-example)
+* [Implementation Examples](#implementation-example)
 
 [Licensing](#licensing)
 
@@ -181,7 +180,7 @@ stateStorage.getStateToken("Block", () -> "<token_default_value>");
 > Note that if no token is found for the key (`Block` in the example) being requested,
 the default supplier (passed as a second parameter) is invoked and its value becomes the method's return value (`<token_default_value>`).
 
-# Implementation example
+## Implementation example
 
 Several examples of Inbound Modules using the `ingestion-core` library are available:
   - [Stellar Inbound Module](https://github.com/amberdata/stellar-ingestion-api-module) for collecting [Stellar](https://www.stellar.org) data  
