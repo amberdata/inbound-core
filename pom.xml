@@ -7,15 +7,15 @@
 >
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>io.amberdata.ingestion</groupId>
-  <artifactId>ingestion-core</artifactId>
-  <version>0.0.4</version>
+  <groupId>io.amberdata.inbound</groupId>
+  <artifactId>inbound-core</artifactId>
+  <version>0.0.5</version>
   <packaging>jar</packaging>
 
-  <name>ingestion-core</name>
-  <description>Amberdata Ingestion API Core module</description>
+  <name>inbound-core</name>
+  <description>Amberdata Inbound Core</description>
 
-  <url>https://github.com/amberdata/ingestion-core</url>
+  <url>https://github.com/amberdata/inbound-core</url>
   <organization>
     <name>Amberdata</name>
     <url>https://amberdata.io</url>
@@ -27,6 +27,28 @@
       <url>http://www.apache.org/licenses/LICENSE-2.0</url>
     </license>
   </licenses>
+
+  <developers>
+    <developer>
+      <id>joanesespanol</id>
+      <name>Joanes Espanol</name>
+      <email>joanes@amberdata.io</email>
+      <organization>Amberdata, Inc.</organization>
+      <organizationUrl>https://amberdata.io/</organizationUrl>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+      </roles>
+      <timezone>-7</timezone>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git://github.com/amberdata/inbound-core.git</connection>
+    <developerConnection>scm:git:git://github.com/amberdata/inbound-core.git</developerConnection>
+    <url>https://github.com/amberdata/inbound-core</url>
+    <tag>HEAD</tag>
+  </scm>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -50,9 +72,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>io.amberdata.ingestion</groupId>
-      <artifactId>ingestion-domain</artifactId>
-      <version>0.1.12</version>
+      <groupId>io.amberdata.inbound</groupId>
+      <artifactId>inbound-domain-model</artifactId>
+      <version>0.1.19</version>
     </dependency>
 
     <dependency>
@@ -270,6 +292,21 @@
               <nexusUrl>https://oss.sonatype.org/</nexusUrl>
               <autoReleaseAfterClose>true</autoReleaseAfterClose>
             </configuration>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.6</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>

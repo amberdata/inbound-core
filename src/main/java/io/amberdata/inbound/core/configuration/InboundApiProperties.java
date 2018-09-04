@@ -1,12 +1,12 @@
-package io.amberdata.ingestion.core.configuration;
+package io.amberdata.inbound.core.configuration;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.convert.DurationUnit;
 
-@ConfigurationProperties("ingestion.api")
-public class IngestionApiProperties {
+@ConfigurationProperties("inbound.api")
+public class InboundApiProperties {
   private String url;
   private String blockchainId;
   private String apiKey;
@@ -68,7 +68,7 @@ public class IngestionApiProperties {
 
   @Override
   public String toString() {
-    return "IngestionApiProperties{" +
+    return "InboundApiProperties{" +
         "url='" + this.url + '\'' +
         ", blockchainId='" + this.blockchainId + '\'' +
         ", apiKey='" + this.apiKey + '\'' +

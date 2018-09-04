@@ -22,7 +22,7 @@ Amberdata provides monitoring, alerting and analytics for blockchains.
 
 The Amberdata platform can accept data from different blockchains.  In fact, after working with and researching a few different protocols and implementations (Ethreum, Aion, Stellar, etc), we have found some commonalities between them (and some differences!), and we have developed a global data model. 
 
-A more complete documentation on the domain model can be found here: [Inbound domain model](https://github.com/amberdata/ingestion-domain-model/blob/master/README.md).
+A more complete documentation on the domain model can be found here: [Inbound domain model](https://github.com/amberdata/inbound-domain-model/blob/master/README.md).
 
 The model defines the different entities and object models that 3rd parties can use to push data into the Amberdata platform via the Inbound API.
 
@@ -32,26 +32,26 @@ A full Swagger documentation of the REST API is available [here](https://blockch
 
 # Inbound API Core
 
-This `ingestion-core` project is a library that one can use when developing a new inbound module.  You can think of it as a set of utilities which simplifies interacting with the Inbound API directly. 
+This `inbound-core` project is a library that one can use when developing a new inbound module.  You can think of it as a set of utilities which simplifies interacting with the Inbound API directly. 
 
 It can be included in any SpringBoot 2.x application, and provides easier means to:
   - create valid requests for objects and sending them to the Inbound API 
   - automatically re-sends requests on error
   - provides a basic state storage to track which metrics have already been sent
 
-The main java class is called `IngestionApiClient` and is used to publish metrics instead of interacting with an HTTP client directly.  More details available in the [Getting Started](#getting-started) section.
+The main java class is called `InboundApiClient` and is used to publish metrics instead of interacting with an HTTP client directly.  More details available in the [Getting Started](#getting-started) section.
 
 # Usage
 
-> Here should be instructions of how to add maven repository which contains ingestion-domain-model artifact
+> Here should be instructions of how to add maven repository which contains inbound-domain-model artifact
 
 ## Use in another project
 
 To add the Amberdata Inbound Core to you Maven project, add this dependency to your `pom.xml`:
 ```xml
 <dependency>
-    <groupId>io.amberdata.ingestion</groupId>
-    <artifactId>ingestion-core</artifactId>
+    <groupId>io.amberdata.inbound</groupId>
+    <artifactId>inbound-core</artifactId>
     <version>0.0.4</version>
 </dependency>
 ```
@@ -59,29 +59,29 @@ To add the Amberdata Inbound Core to you Maven project, add this dependency to y
 Or to your `build.gradle`:
 ```gradle
 dependencies {
-    implementation 'io.amberdata.ingestion:ingestion-core:0.0.4'
+    implementation 'io.amberdata.inbound:inbound-core:0.0.4'
 }
 ```
 
 ## Build locally
 
 ```sh
-$ git clone https://github.com/amberdata/ingestion-core.git
-$ cd ingestion-core
+$ git clone https://github.com/amberdata/inbound-core.git
+$ cd inbound-core
 $ mvn clean install
 ```
 
 # Getting Started
 
-The `IngestionApiClient` can be instantiated as a Spring framework component, and needs to configured accordingly to your own blockchain.
+The `InboundApiClient` can be instantiated as a Spring framework component, and needs to configured accordingly to your own blockchain.
 
 > Note that you have to have register your blockhain before you start publishing metrics. To do that, follow the instructions: *put it here*
 
 Three properties control where and how the blockchain data is published to the Inbound API: 
 ```properties
-ingestion.api.url=https://blockchains.amberdata.io/api/v1
-ingestion.api.blockchain-id=<blockchain_id_goes_here>
-ingestion.api.api-key=<api_key_goes_here>
+inbound.api.url=https://blockchains.amberdata.io/api/v1
+inbound.api.blockchain-id=<blockchain_id_goes_here>
+inbound.api.api-key=<api_key_goes_here>
 ```
 
 Once you have implemented your own inbound module, you can either:
@@ -89,18 +89,18 @@ Once you have implemented your own inbound module, you can either:
 - or pass them as parameters to your application at start time, for example: 
 ```bash
 $ java -jar <application>.jar                                 \
-  --ingestion.api.url=https://blockchains.amberdata.io/api/v1 \
-  --ingestion.api.blockchain-id=<blockchain_id_goes_here>     \
-  --ingestion.api.api-key=<api_key_goes_here>
+  --inbound.api.url=https://blockchains.amberdata.io/api/v1 \
+  --inbound.api.blockchain-id=<blockchain_id_goes_here>     \
+  --inbound.api.api-key=<api_key_goes_here>
 ```
 
 ## Application configuration
 
-To help your SpringBoot application find the `IngestionApiClient` class, its base package needs to be specified in the configuration.
-The simplest way is to refer to the `io.amberdata.ingestion.core.IngestionCore` marker interface in the `@ComponentScan` annotation:
+To help your SpringBoot application find the `InboundApiClient` class, its base package needs to be specified in the configuration.
+The simplest way is to refer to the `io.amberdata.inbound.core.InboundCore` marker interface in the `@ComponentScan` annotation:
 ```java 
 @SpringBootApplication
-@ComponentScan(basePackageClasses = IngestionCore.class)
+@ComponentScan(basePackageClasses = InboundCore.class)
 public class InboundModuleDemoApplication {
     public static void main (String[] arguments) {
         SpringApplication.run(Application.class, arguments);
@@ -110,22 +110,22 @@ public class InboundModuleDemoApplication {
 
 ## Retrieving the Inbound Client
 
-With the above configuration, it is now possible to inject the configured `IngestionApiClient` instance as a dependency: 
+With the above configuration, it is now possible to inject the configured `InboundApiClient` instance as a dependency: 
 ```java 
 @Component
 public class BlocksPublisher {
-    private final IngestionApiClient ingestionApiClient;
+    private final InboundApiClient inboundApiClient;
   
     @Autowired
-    public BlocksPublisher (IngestionApiClient ingestionApiClient) {
-        this.ingestionApiClient = ingestionApiClient;
+    public BlocksPublisher (InboundApiClient inboundApiClient) {
+        this.inboundApiClient = inboundApiClient;
     }
 }
 ```
 
 To send blockchain objects to the Inbound API, the `publish` method is called with the appropriate context, for example:
 ```java 
-ingestionApiClient.publish("/blocks", entities); // sends a list of block entities to the Inbound API endpoint 
+inboundApiClient.publish("/blocks", entities); // sends a list of block entities to the Inbound API endpoint 
 ```
 Note than you can send an entity (e.g. block) or a list of entities all at once. 
 
@@ -142,7 +142,7 @@ BlockchainEntityWithState blockWithState = BlockchainEntityWithState.from(
     ResourceState.from("Block", "12345")
 );
 
-ingestionApiClient.publish("/blocks", blockWithState);
+inboundApiClient.publish("/blocks", blockWithState);
 ```
 
 The `BlockchainEntityWithState` automatically:
@@ -157,17 +157,17 @@ In the example above, `ResourceState.from("Block", "12345")` provides a generic 
 
 ### Restoring state
 
-Whenever you need information about the last published blockchain entity (e.g. block), you can get it from the internal storage, with an instance of the `io.amberdata.ingestion.core.state.ResourceStateStorage` component, which can be injected into any SpringBoot application:
+Whenever you need information about the last published blockchain entity (e.g. block), you can get it from the internal storage, with an instance of the `io.amberdata.inbound.core.state.ResourceStateStorage` component, which can be injected into any SpringBoot application:
 ```java 
 @Component
 public class BlocksPublisher {
-    private final IngestionApiClient   ingestionApiClient;
+    private final InboundApiClient     inboundApiClient;
     private final ResourceStateStorage stateStorage;
   
     @Autowired
-    public BlocksPublisher (IngestionApiClient ingestionApiClient, ResourceStateStorage stateStorage) {
-        this.ingestionApiClient = ingestionApiClient;
-        this.stateStorage       = stateStorage;
+    public BlocksPublisher (InboundApiClient inboundApiClient, ResourceStateStorage stateStorage) {
+        this.inboundApiClient = inboundApiClient;
+        this.stateStorage     = stateStorage;
     }
 }
 ```
@@ -182,8 +182,8 @@ the default supplier (passed as a second parameter) is invoked and its value bec
 
 ## Implementation example
 
-Several examples of Inbound Modules using the `ingestion-core` library are available:
-  - [Stellar Inbound Module](https://github.com/amberdata/stellar-ingestion-api-module) for collecting [Stellar](https://www.stellar.org) data  
+Several examples of Inbound Modules using the `inbound-core` library are available:
+  - [Stellar Inbound Module](https://github.com/amberdata/stellar-inbound-api-module) for collecting [Stellar](https://www.stellar.org) data  
   - [EOS Inbound Module](https://github.com/amberdata/eos-inbound-module) for collecting [EOS](https://www.eos.io/) data  
 
 # Licensing

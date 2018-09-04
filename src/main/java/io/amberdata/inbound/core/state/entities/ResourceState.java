@@ -1,4 +1,4 @@
-package io.amberdata.ingestion.core.state.entities;
+package io.amberdata.inbound.core.state.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

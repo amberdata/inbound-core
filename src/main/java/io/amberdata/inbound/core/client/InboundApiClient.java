@@ -1,8 +1,8 @@
-package io.amberdata.ingestion.core.client;
+package io.amberdata.inbound.core.client;
 
-import io.amberdata.ingestion.core.configuration.IngestionApiProperties;
-import io.amberdata.ingestion.core.state.ResourceStateStorage;
-import io.amberdata.ingestion.domain.BlockchainEntity;
+import io.amberdata.inbound.core.configuration.InboundApiProperties;
+import io.amberdata.inbound.core.state.ResourceStateStorage;
+import io.amberdata.inbound.domain.BlockchainEntity;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -22,16 +22,16 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
-@PropertySource("classpath:ingestion-defaults.properties")
-@EnableConfigurationProperties(IngestionApiProperties.class)
-public class IngestionApiClient {
-  private static final Logger LOG = LoggerFactory.getLogger(IngestionApiClient.class);
+@PropertySource("classpath:inbound-defaults.properties")
+@EnableConfigurationProperties(InboundApiProperties.class)
+public class InboundApiClient {
+  private static final Logger LOG = LoggerFactory.getLogger(InboundApiClient.class);
 
   private final WebClient webClient;
-  private final IngestionApiProperties apiProperties;
+  private final InboundApiProperties apiProperties;
   private final ResourceStateStorage stateStorage;
 
-  public IngestionApiClient(IngestionApiProperties apiProperties,
+  public InboundApiClient(InboundApiProperties apiProperties,
                             ResourceStateStorage stateStorage) {
 
     this.apiProperties = apiProperties;
@@ -42,7 +42,7 @@ public class IngestionApiClient {
         .defaultHeaders(this::defaultHttpHeaders)
         .build();
 
-    LOG.info("Creating Ingestion API client with configured with {}", apiProperties);
+    LOG.info("Creating Inbound API client with configured with {}", apiProperties);
   }
 
   private void defaultHttpHeaders(HttpHeaders httpHeaders) {
