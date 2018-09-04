@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/amberdata/inbound-core.svg?branch=master)](https://travis-ci.com/amberdata/inbound-core)
+
 [Amberdata Inbound API](#amberdata-inbound-api)
 
 [Inbound API Core](#inbound-api-core)
