@@ -1,7 +1,7 @@
-package io.amberdata.ingestion.core.client;
+package io.amberdata.inbound.core.client;
 
-import io.amberdata.ingestion.core.state.entities.ResourceState;
-import io.amberdata.ingestion.domain.BlockchainEntity;
+import io.amberdata.inbound.core.state.entities.ResourceState;
+import io.amberdata.inbound.domain.BlockchainEntity;
 
 public final class BlockchainEntityWithState<T extends BlockchainEntity> {
   private final ResourceState resourceState;

@@ -39,4 +39,4 @@ bin/
 screenlog.0
 
 # State embedded database
-/ingestion-module-state*
+/inbound-module-state*
