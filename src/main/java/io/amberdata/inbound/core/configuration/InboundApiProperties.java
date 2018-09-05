@@ -1,9 +1,10 @@
 package io.amberdata.inbound.core.configuration;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.convert.DurationUnit;
+
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 
 @ConfigurationProperties("inbound.api")
 public class InboundApiProperties {
@@ -68,13 +69,14 @@ public class InboundApiProperties {
 
   @Override
   public String toString() {
-    return "InboundApiProperties{" +
-        "url='" + this.url + '\'' +
-        ", blockchainId='" + this.blockchainId + '\'' +
-        ", apiKey='" + this.apiKey + '\'' +
-        ", retriesOnError=" + this.retriesOnError +
-        ", backOffTimeoutInitial=" + this.backOffTimeoutInitial +
-        ", backOffTimeoutMax=" + this.backOffTimeoutMax +
-        '}';
+    return
+        "InboundApiProperties{"
+        + "url='" + this.url + '\''
+        + ", blockchainId='" + this.blockchainId + '\''
+        + ", apiKey='" + this.apiKey + '\''
+        + ", retriesOnError=" + this.retriesOnError
+        + ", backOffTimeoutInitial=" + this.backOffTimeoutInitial
+        + ", backOffTimeoutMax=" + this.backOffTimeoutMax
+        + '}';
   }
 }
