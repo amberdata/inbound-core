@@ -42,9 +42,10 @@ public class ResourceState {
 
   @Override
   public String toString() {
-    return "ResourceState{" +
-        "resourceType='" + this.resourceType + '\'' +
-        ", stateToken='" + this.stateToken + '\'' +
-        '}';
+    return
+        "ResourceState{"
+        + "resourceType='" + this.resourceType + '\''
+        + ", stateToken='" + this.stateToken + '\''
+        + '}';
   }
 }

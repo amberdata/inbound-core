@@ -3,10 +3,7 @@ package io.amberdata.inbound.core.client;
 import io.amberdata.inbound.core.configuration.InboundApiProperties;
 import io.amberdata.inbound.core.state.ResourceStateStorage;
 import io.amberdata.inbound.domain.BlockchainEntity;
-import java.time.Duration;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -17,9 +14,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+
 import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.time.Duration;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @PropertySource("classpath:inbound-defaults.properties")
@@ -31,6 +34,12 @@ public class InboundApiClient {
   private final InboundApiProperties apiProperties;
   private final ResourceStateStorage stateStorage;
 
+  /**
+   * Default constructor.
+   *
+   * @param apiProperties the properties object for this class
+   * @param stateStorage the storage where the state of the entities is saved to and restored from
+   */
   public InboundApiClient(InboundApiProperties apiProperties, ResourceStateStorage stateStorage) {
     this.apiProperties = apiProperties;
     this.stateStorage = stateStorage;
@@ -49,32 +58,28 @@ public class InboundApiClient {
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
   }
 
-  public <T extends BlockchainEntity> BlockchainEntityWithState<T> publishWithState(
-      String endpointUri,
-      BlockchainEntityWithState<T> entityWithState
-  ) {
-    return publishWithState(endpointUri, Collections.singletonList(entityWithState));
-  }
-
-  public <T extends BlockchainEntity> BlockchainEntityWithState<T> publishWithState(
-      String endpointUri,
-      List<BlockchainEntityWithState<T>> entitiesWithState
-  ) {
-    this.publish(endpointUri, extractEntitiesFrom(entitiesWithState));
-
-    BlockchainEntityWithState<T> lastEntityWithState = entitiesWithState.get(
-        entitiesWithState.size() - 1
-    );
-
-    this.stateStorage.storeState(lastEntityWithState);
-
-    return lastEntityWithState;
-  }
-
+  /**
+   * Publishes the entity to the specified endpoint.
+   *
+   * @param endpointUri  The endpoint to publish to
+   * @param entity the entity to publish
+   * @param <T> the type of entity
+   *
+   * @return the response from the HTTP call
+   */
   public <T extends BlockchainEntity> String publish(String endpointUri, T entity) {
     return this.publish(endpointUri, Collections.singletonList(entity));
   }
 
+  /**
+   * Publishes the entities to the specified endpoint.
+   *
+   * @param endpointUri  The endpoint to publish to
+   * @param entities the entities to publish
+   * @param <T> the type of entity
+   *
+   * @return the response from the HTTP call
+   */
   public <T extends BlockchainEntity> String publish(String endpointUri, List<T> entities) {
     String response = this.webClient
         .post()
@@ -91,6 +96,47 @@ public class InboundApiClient {
     LOG.info("Server response: {}", response);
 
     return response;
+  }
+
+  /**
+   * Publishes the entity to the specified endpoint, and saves it in the pre-defined storage.
+   *
+   * @param endpointUri  The endpoint to publish to
+   * @param entityWithState the entity to publish, with its state
+   * @param <T> the type of entity
+   *
+   * @return the last entity published
+   */
+  public <T extends BlockchainEntity> BlockchainEntityWithState<T> publishWithState(
+      String endpointUri,
+      BlockchainEntityWithState<T> entityWithState
+  ) {
+    return publishWithState(endpointUri, Collections.singletonList(entityWithState));
+  }
+
+  /**
+   * Publishes the entities to the specified endpoint, and saves the last successfully stored entity
+   * in the pre-defined storage.
+   *
+   * @param endpointUri  The endpoint to publish to
+   * @param entitiesWithState the entities to publish, with their state
+   * @param <T> the type of entity
+   *
+   * @return the last entity published
+   */
+  public <T extends BlockchainEntity> BlockchainEntityWithState<T> publishWithState(
+      String endpointUri,
+      List<BlockchainEntityWithState<T>> entitiesWithState
+  ) {
+    this.publish(endpointUri, extractEntitiesFrom(entitiesWithState));
+
+    BlockchainEntityWithState<T> lastEntityWithState = entitiesWithState.get(
+        entitiesWithState.size() - 1
+    );
+
+    this.stateStorage.storeState(lastEntityWithState);
+
+    return lastEntityWithState;
   }
 
   private <T extends BlockchainEntity> List<T> extractEntitiesFrom(
@@ -123,7 +169,10 @@ public class InboundApiClient {
   }
 
   private Mono<Long> backOffDelay(Integer exponentialMultiplier) {
-    Duration delayDuration = this.apiProperties.getBackOffTimeoutInitial().multipliedBy(exponentialMultiplier);
+    Duration delayDuration = this.apiProperties
+        .getBackOffTimeoutInitial()
+        .multipliedBy(exponentialMultiplier);
+
     if (delayDuration.compareTo(this.apiProperties.getBackOffTimeoutMax()) > 0) {
       delayDuration = this.apiProperties.getBackOffTimeoutMax();
     }

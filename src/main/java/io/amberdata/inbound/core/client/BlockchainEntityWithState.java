@@ -29,9 +29,10 @@ public final class BlockchainEntityWithState<T extends BlockchainEntity> {
 
   @Override
   public String toString() {
-    return "BlockchainEntityWithState{" +
-        "resourceState=" + this.resourceState +
-        ", entity=" + this.entity +
-        '}';
+    return
+        "BlockchainEntityWithState{"
+        + "resourceState=" + this.resourceState
+        + ", entity=" + this.entity
+        + '}';
   }
 }
