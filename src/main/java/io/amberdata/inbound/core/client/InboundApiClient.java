@@ -31,9 +31,7 @@ public class InboundApiClient {
   private final InboundApiProperties apiProperties;
   private final ResourceStateStorage stateStorage;
 
-  public InboundApiClient(InboundApiProperties apiProperties,
-                            ResourceStateStorage stateStorage) {
-
+  public InboundApiClient(InboundApiProperties apiProperties, ResourceStateStorage stateStorage) {
     this.apiProperties = apiProperties;
     this.stateStorage = stateStorage;
 
@@ -51,22 +49,38 @@ public class InboundApiClient {
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
   }
 
-  public <T extends BlockchainEntity> BlockchainEntityWithState<T> publish(
+  public <T extends BlockchainEntity> BlockchainEntityWithState<T> publishWithState(
       String endpointUri,
       BlockchainEntityWithState<T> entityWithState
   ) {
-    return publish(endpointUri, Collections.singletonList(entityWithState));
+    return publishWithState(endpointUri, Collections.singletonList(entityWithState));
   }
 
-  public <T extends BlockchainEntity> BlockchainEntityWithState<T> publish(
+  public <T extends BlockchainEntity> BlockchainEntityWithState<T> publishWithState(
       String endpointUri,
       List<BlockchainEntityWithState<T>> entitiesWithState
   ) {
+    this.publish(endpointUri, extractEntitiesFrom(entitiesWithState));
+
+    BlockchainEntityWithState<T> lastEntityWithState = entitiesWithState.get(
+        entitiesWithState.size() - 1
+    );
+
+    this.stateStorage.storeState(lastEntityWithState);
+
+    return lastEntityWithState;
+  }
+
+  public <T extends BlockchainEntity> String publish(String endpointUri, T entity) {
+    return this.publish(endpointUri, Collections.singletonList(entity));
+  }
+
+  public <T extends BlockchainEntity> String publish(String endpointUri, List<T> entities) {
     String response = this.webClient
         .post()
         .uri(endpointUri)
         .accept(MediaType.APPLICATION_JSON)
-        .body(BodyInserters.fromObject(extractEntitiesFrom(entitiesWithState)))
+        .body(BodyInserters.fromObject(entities))
         .retrieve()
         .bodyToMono(String.class)
         .retryWhen(companion -> companion
@@ -76,12 +90,7 @@ public class InboundApiClient {
 
     LOG.info("Server response: {}", response);
 
-    BlockchainEntityWithState<T> lastEntityWithState = entitiesWithState
-        .get(entitiesWithState.size() - 1);
-
-    this.stateStorage.storeState(lastEntityWithState);
-
-    return lastEntityWithState;
+    return response;
   }
 
   private <T extends BlockchainEntity> List<T> extractEntitiesFrom(
