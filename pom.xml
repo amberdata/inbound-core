@@ -9,7 +9,7 @@
 
   <groupId>io.amberdata.inbound</groupId>
   <artifactId>inbound-core</artifactId>
-  <version>0.0.7</version>
+  <version>0.0.8</version>
   <packaging>jar</packaging>
 
   <name>inbound-core</name>
@@ -74,7 +74,7 @@
     <dependency>
       <groupId>io.amberdata.inbound</groupId>
       <artifactId>inbound-domain-model</artifactId>
-      <version>0.1.19</version>
+      <version>0.1.20</version>
     </dependency>
 
     <dependency>
