@@ -9,7 +9,7 @@
 
   <groupId>io.amberdata.inbound</groupId>
   <artifactId>inbound-core</artifactId>
-  <version>0.0.7</version>
+  <version>0.0.8</version>
   <packaging>jar</packaging>
 
   <name>inbound-core</name>
