@@ -111,7 +111,7 @@ public class InboundApiClient {
       String endpointUri,
       BlockchainEntityWithState<T> entityWithState
   ) {
-    return publishWithState(endpointUri, Collections.singletonList(entityWithState));
+    return this.publishWithState(endpointUri, Collections.singletonList(entityWithState));
   }
 
   /**
