@@ -4,8 +4,14 @@ import io.amberdata.inbound.core.configuration.InboundApiProperties;
 import io.amberdata.inbound.core.state.ResourceStateStorage;
 import io.amberdata.inbound.domain.BlockchainEntity;
 
+import java.time.Duration;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
@@ -19,18 +25,14 @@ import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Component
 @PropertySource("classpath:inbound-defaults.properties")
 @EnableConfigurationProperties(InboundApiProperties.class)
 public class InboundApiClient {
+
   private static final Logger LOG = LoggerFactory.getLogger(InboundApiClient.class);
 
-  private final WebClient webClient;
+  private final WebClient            webClient;
   private final InboundApiProperties apiProperties;
   private final ResourceStateStorage stateStorage;
 
@@ -42,7 +44,7 @@ public class InboundApiClient {
    */
   public InboundApiClient(InboundApiProperties apiProperties, ResourceStateStorage stateStorage) {
     this.apiProperties = apiProperties;
-    this.stateStorage = stateStorage;
+    this.stateStorage  = stateStorage;
 
     this.webClient = WebClient.builder()
         .baseUrl(apiProperties.getUrl())
@@ -54,7 +56,7 @@ public class InboundApiClient {
 
   private void defaultHttpHeaders(HttpHeaders httpHeaders) {
     httpHeaders.add("x-amberdata-blockchain-id", this.apiProperties.getBlockchainId());
-    httpHeaders.add("x-amberdata-api-key", this.apiProperties.getApiKey());
+    httpHeaders.add("x-amberdata-api-key",       this.apiProperties.getApiKey());
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
   }
 
@@ -111,7 +113,7 @@ public class InboundApiClient {
       String endpointUri,
       BlockchainEntityWithState<T> entityWithState
   ) {
-    return publishWithState(endpointUri, Collections.singletonList(entityWithState));
+    return this.publishWithState(endpointUri, Collections.singletonList(entityWithState));
   }
 
   /**
@@ -180,4 +182,5 @@ public class InboundApiClient {
 
     return Mono.delay(delayDuration);
   }
+
 }

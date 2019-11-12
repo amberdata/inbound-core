@@ -4,12 +4,13 @@ import io.amberdata.inbound.core.state.entities.ResourceState;
 import io.amberdata.inbound.domain.BlockchainEntity;
 
 public final class BlockchainEntityWithState<T extends BlockchainEntity> {
+
   private final ResourceState resourceState;
-  private final T entity;
+  private final T             entity;
 
   private BlockchainEntityWithState(T entity, ResourceState resourceState) {
     this.resourceState = resourceState;
-    this.entity = entity;
+    this.entity        = entity;
   }
 
   public static <T extends BlockchainEntity> BlockchainEntityWithState<T> from(
@@ -31,8 +32,9 @@ public final class BlockchainEntityWithState<T extends BlockchainEntity> {
   public String toString() {
     return
         "BlockchainEntityWithState{"
-        + "resourceState=" + this.resourceState
-        + ", entity=" + this.entity
+        + "resourceState=" + this.resourceState + ","
+        + "entity="        + this.entity
         + '}';
   }
+
 }

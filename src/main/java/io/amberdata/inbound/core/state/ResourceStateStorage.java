@@ -4,18 +4,20 @@ import io.amberdata.inbound.core.client.BlockchainEntityWithState;
 import io.amberdata.inbound.core.state.entities.ResourceState;
 import io.amberdata.inbound.core.state.repositories.ResourceStateRepository;
 
+import java.util.function.Supplier;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Component;
-
-import java.util.function.Supplier;
 
 @Component
 @EnableJpaRepositories("io.amberdata.inbound.core.state.repositories")
 @EntityScan("io.amberdata.inbound.core.state.entities")
 public class ResourceStateStorage {
+
   private static final Logger LOG = LoggerFactory.getLogger(ResourceStateStorage.class);
 
   private final ResourceStateRepository resourceStateRepository;
@@ -75,4 +77,5 @@ public class ResourceStateStorage {
         resourceState.getStateToken()
     );
   }
+
 }
