@@ -6,6 +6,7 @@ import javax.persistence.Id;
 
 @Entity
 public class ResourceState {
+
   @Id
   private String resourceType;
 
@@ -17,7 +18,7 @@ public class ResourceState {
 
   private ResourceState(String resourceType, String stateToken) {
     this.resourceType = resourceType;
-    this.stateToken = stateToken;
+    this.stateToken   = stateToken;
   }
 
   public static ResourceState from(String resourceType, String stateToken) {
@@ -44,8 +45,9 @@ public class ResourceState {
   public String toString() {
     return
         "ResourceState{"
-        + "resourceType='" + this.resourceType + '\''
-        + ", stateToken='" + this.stateToken + '\''
+        + "resourceType='" + this.resourceType + '\'' + ","
+        + "stateToken='"   + this.stateToken   + '\''
         + '}';
   }
+
 }
