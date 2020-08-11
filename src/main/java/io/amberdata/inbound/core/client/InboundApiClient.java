@@ -83,7 +83,8 @@ public class InboundApiClient {
    * @return the response from the HTTP call
    */
   public <T extends BlockchainEntity> String publish(String endpointUri, List<T> entities) {
-    String response = this.webClient
+     LOG.info("Make a request: endpoint={}, entities={}", endpointUri, entities);
+/*    String response = this.webClient
         .post()
         .uri(endpointUri)
         .accept(MediaType.APPLICATION_JSON)
@@ -97,7 +98,8 @@ public class InboundApiClient {
 
     LOG.info("Server response: {}", response);
 
-    return response;
+    return response;*/
+    return null; // safe cuz no one ever checks this rv
   }
 
   /**
